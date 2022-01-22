@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../_PersoMatrices/_PersoMatrices.iml" filepath="$PROJECT_DIR$/../_PersoMatrices/_PersoMatrices.iml" />
+      <module fileurl="file://$PROJECT_DIR$/_PersoNeuralNetwork-FullyConnected.iml" filepath="$PROJECT_DIR$/_PersoNeuralNetwork-FullyConnected.iml" />
+    </modules>
+  </component>
+</project>
