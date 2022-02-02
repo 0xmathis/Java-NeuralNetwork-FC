@@ -25,8 +25,8 @@ public class Database {
             this.biasesArray = new ArrayList<>();
             this.weightsArray = new ArrayList<>();
         } else {
-            this.biasesArray = this.getBiasesArrayFromFile(biasesFile);
-            this.weightsArray = this.getWeightsArrayFromFile(weightsFile);
+            this.biasesArray = this.getBiasesArrayFromFile();
+            this.weightsArray = this.getWeightsArrayFromFile();
         }
 
     }
@@ -83,8 +83,8 @@ public class Database {
         return this.biasesArray.get(toLayer - 1);
     }
 
-    private ArrayList<Matrice> getBiasesArrayFromFile(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
+    private ArrayList<Matrice> getBiasesArrayFromFile() throws FileNotFoundException {
+        Scanner scanner = new Scanner(this.biasesFile);
         ArrayList<Matrice> allBiases = new ArrayList<>();
 
         for (int n = 1; n < this.shape.length; n++) {
@@ -104,8 +104,8 @@ public class Database {
         return this.weightsArray.get(toLayer - 1);
     }
 
-    private ArrayList<Matrice> getWeightsArrayFromFile(File file) throws FileNotFoundException {
-        Scanner scanner = new Scanner(file);
+    private ArrayList<Matrice> getWeightsArrayFromFile() throws FileNotFoundException {
+        Scanner scanner = new Scanner(this.weightsFile);
         ArrayList<Matrice> allWeights = new ArrayList<>();
 
         for (int n = 1; n < this.shape.length; n++) {
