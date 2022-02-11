@@ -125,8 +125,8 @@ public class Layer {
         this.weights = this.weights.sub(this.dCost_dWeights.mul(this.learningRate * this.momentumRate));
         this.weights = this.weights.add(momentumWeights);
 
-        this.previousDeltaBiases = this.deltas;
-        this.previousDeltaWeights = this.dCost_dWeights;
+        this.previousDeltaBiases = this.deltas.copy();
+        this.previousDeltaWeights = this.dCost_dWeights.copy();
     }
 
     public void batchSaveDeltas() throws DimensionError {

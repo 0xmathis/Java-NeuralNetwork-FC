@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class NeuralNetwork {
@@ -170,13 +171,7 @@ public class NeuralNetwork {
     }
 
     public ArrayList<Double> guess(ArrayList<ArrayList<Double>> test_data) throws DimensionError {
-        int choix = randint(test_data.size() - 1);
-
-        ArrayList<Double> data = test_data.get(choix);
-
-        ArrayList<ArrayList<Double>> data_ = new ArrayList<>();
-        data_.add(data);
-        Matrice data_matrice = new Matrice(data_).transpose();
+        Matrice data_matrice = new Matrice(test_data).transpose();
 
         Matrice guess = feedForward(data_matrice);
 
@@ -204,6 +199,7 @@ public class NeuralNetwork {
     }
 
     public void setDataSet(double[][] data) {
+        System.out.println(Arrays.deepToString(data));
         for (double[] data_ : data) {
             this.dataSet.add(Matrice.fromList(new double[][]{data_}).transpose());
         }
