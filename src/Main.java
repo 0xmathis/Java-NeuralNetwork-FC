@@ -1,5 +1,4 @@
 import Classes.NeuralNetwork;
-import MatricesExceptions.DimensionError;
 
 import java.io.File;
 import java.io.IOException;
