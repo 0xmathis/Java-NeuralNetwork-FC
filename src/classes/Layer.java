@@ -1,6 +1,7 @@
-package Classes;
+package classes;
 
 import MatricesExceptions.DimensionError;
+import classes.Matrice;
 
 public class Layer {
     private final int[] shape;
@@ -70,7 +71,7 @@ public class Layer {
     }
 
     public Matrice feedForward(Matrice data) throws DimensionError {
-        this.input = data;
+        this.input = data.copy();
         this.weightedSum = this.weights.mul(this.input).add(this.biases);
         this.output = this.weightedSum.map(Layer::sigmoid);
 

@@ -1,4 +1,4 @@
-package Classes;
+package classes;
 
 import MatricesExceptions.DimensionError;
 
@@ -182,7 +182,7 @@ public class FC {
         int choix = randint(test_data.length - 1);
 
         double[][] data_ = new double[][]{test_data};
-        Matrice data_matrice = Matrice.fromList(data_).transpose();
+        Matrice data_matrice = new Matrice(data_).transpose();
 
         Matrice guess = feedForward(data_matrice);
 
@@ -201,7 +201,7 @@ public class FC {
     public void setDataSet(double[][] data) {
         System.out.println(Arrays.deepToString(data));
         for (double[] data_ : data) {
-            this.dataSet.add(Matrice.fromList(new double[][]{data_}).transpose());
+            this.dataSet.add(new Matrice(new double[][]{data_}).transpose());
         }
     }
 
@@ -215,7 +215,7 @@ public class FC {
 
     public void setTargetsSet(double[][] targets) {
         for (double[] target_ : targets) {
-            this.targetsSet.add(Matrice.fromList(new double[][]{target_}).transpose());
+            this.targetsSet.add(new Matrice(new double[][]{target_}).transpose());
         }
     }
 

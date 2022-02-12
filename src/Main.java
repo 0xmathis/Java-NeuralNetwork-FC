@@ -1,10 +1,11 @@
-import Classes.FC;
+import classes.FC;
+import MatricesExceptions.DimensionError;
 
 import java.io.File;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, DimensionError {
         double[][] inputs = new double[][]{{0, 0}, {1, 1}, {0, 1}, {1, 0}};
         double[][] targets = new double[][]{{1}, {1}, {0}, {0}};
 
@@ -13,7 +14,7 @@ public class Main {
         nn.setTargetsSet(targets);
 
 //        nn.trainFromDataInObjectWhileCostAboveMax(1e-4);
-//        nn.trainFromDataInObject(1_000_000, 1_000_000);
+        nn.stochasticTrainFromDataInObject(1_000_000, 1_000_000);
 //        nn.batchTrainFromDataInObject(10);
 
 //        for (double[] input : inputs) {
