@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class NeuralNetwork {
+public class FC {
     private final ArrayList<Layer> layers;
     private final Database database;
     private final ArrayList<Matrice> dataSet;
     private final ArrayList<Matrice> targetsSet;
 
-    public NeuralNetwork(int[] shape, double learningRate, double momentumRate, File weightsFile, File biasesFile) throws IOException {
+    public FC(int[] shape, double learningRate, double momentumRate, File weightsFile, File biasesFile) throws IOException {
         this.dataSet = new ArrayList<>();
         this.targetsSet = new ArrayList<>();
 
@@ -265,7 +265,7 @@ public class NeuralNetwork {
                 this.feedForward(data);
                 this.batchBackPropagation(data, target);
 
-                System.out.printf("Epoch : %s, itération : %s, durée : %s\n", i, index + 1, NeuralNetwork.from_millisecondes(System.currentTimeMillis() - temp));
+                System.out.printf("Epoch : %s, itération : %s, durée : %s\n", i, index + 1, FC.from_millisecondes(System.currentTimeMillis() - temp));
             }
             this.batchTuning();
             this.toFile();

@@ -1,4 +1,4 @@
-import Classes.NeuralNetwork;
+import Classes.FC;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ public class Main {
         double[][] inputs = new double[][]{{0, 0}, {1, 1}, {0, 1}, {1, 0}};
         double[][] targets = new double[][]{{1}, {1}, {0}, {0}};
 
-        NeuralNetwork nn = new NeuralNetwork(new int[]{2, 2, 1}, 0.6, 0.9, new File("Weights.txt"), new File("Biases.txt"));
+        FC nn = new FC(new int[]{2, 2, 1}, 0.6, 0.9, new File("Weights.txt"), new File("Biases.txt"));
         nn.setDataSet(inputs);
         nn.setTargetsSet(targets);
 
