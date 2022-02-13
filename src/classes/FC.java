@@ -1,6 +1,6 @@
 package classes;
 
-import MatricesExceptions.DimensionError;
+import matricesExceptions.DimensionError;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class FC {
-    private final ArrayList<Layer> layers;
-    private final Database database;
     private final ArrayList<Matrice> dataSet;
     private final ArrayList<Matrice> targetsSet;
+    private ArrayList<Layer> layers;
+    private Database database;
 
     public FC(int[] shape, double learningRate, double momentumRate, File weightsFile, File biasesFile) throws IOException {
         this.dataSet = new ArrayList<>();
@@ -31,9 +31,31 @@ public class FC {
                 this.layers.add(new Layer(shape, i, learningRate, momentumRate));
             }
         }
-
         this.toFile();
+    }
 
+    public FC(Object[] args) {
+
+        this.dataSet = new ArrayList<>();
+        this.targetsSet = new ArrayList<>();
+
+        try {
+            this.database = new Database((File) args[3], (File) args[4], (int[]) args[0]);
+            this.layers = new ArrayList<>();
+
+            for (int i = 1; i < ((int[]) args[0]).length; i++) {
+                if (this.database.isWeightsFileFull() && this.database.isBiasesFileFull()) {
+                    this.layers.add(new Layer((int[]) args[0], i, this.database.getWeigths(i), this.database.getBiases(i), (double) args[1], (double) args[2]));
+                } else {
+                    this.layers.add(new Layer((int[]) args[0], i, (double) args[1], (double) args[2]));
+                }
+            }
+
+            this.toFile();
+
+        } catch (IOException e) {
+            System.exit(0);
+        }
     }
 
     public static float abs(float x) {
@@ -88,7 +110,7 @@ public class FC {
         this.database.toFile(biasesList, weightsList);
     }
 
-    private void stochasticBackPropagation(Matrice inputs, Matrice targets) throws DimensionError {
+    private void stochasticBackPropagation(Matrice inputs, Matrice targets) {
         // calcul des deltas
         for (int i = this.layers.size() - 1; i >= 0; i--) {
             if (i == this.layers.size() - 1) {
@@ -114,7 +136,7 @@ public class FC {
 
     }
 
-    private void batchBackPropagation(Matrice inputs, Matrice targets) throws DimensionError {
+    private void batchBackPropagation(Matrice inputs, Matrice targets) {
         // calcul des deltas
         for (int i = this.layers.size() - 1; i >= 0; i--) {
             if (i == this.layers.size() - 1) {
@@ -140,7 +162,7 @@ public class FC {
 
     }
 
-    private String evaluate_time(int iterations, int freq) throws IOException, DimensionError {
+    private String evaluate_time(int iterations, int freq) throws IOException {
         long temp1 = System.currentTimeMillis();
         this.toFile();
         long time_toFile = System.currentTimeMillis() - temp1;
@@ -163,14 +185,14 @@ public class FC {
         return String.format("Temps total évalué : %s", from_millisecondes(time_total));
     }
 
-    private Matrice feedForward(Matrice data) throws DimensionError {
+    private Matrice feedForward(Matrice data) {
         for (Layer layer : this.layers) {
             data = layer.feedForward(data);
         }
         return data;
     }
 
-    public ArrayList<Double> guess(ArrayList<ArrayList<Double>> test_data) throws DimensionError {
+    public ArrayList<Double> guess(ArrayList<ArrayList<Double>> test_data) {
         Matrice data_matrice = new Matrice(test_data).transpose();
 
         Matrice guess = feedForward(data_matrice);
@@ -178,7 +200,7 @@ public class FC {
         return guess.transpose().toArrayList().get(0);
     }
 
-    public ArrayList<Double> guess(double[] test_data) throws DimensionError {
+    public ArrayList<Double> guess(double[] test_data) {
         int choix = randint(test_data.length - 1);
 
         double[][] data_ = new double[][]{test_data};
@@ -219,7 +241,7 @@ public class FC {
         }
     }
 
-    public void stochasticTrainFromDataInObject(int iterations, int freq) throws DimensionError, IOException {
+    public void stochasticTrainFromDataInObject(int iterations, int freq) throws IOException {
 //        System.out.println(this.evaluate_time(iterations, freq));
         long start = System.currentTimeMillis();
 
@@ -252,7 +274,7 @@ public class FC {
 
     }
 
-    public void batchTrainFromDataInObject(int epochs) throws DimensionError, IOException {
+    public void batchTrainFromDataInObject(int epochs) throws IOException {
         long start = System.currentTimeMillis();
 
         for (int i = 1; i <= epochs; i++) {
@@ -283,7 +305,7 @@ public class FC {
         }
     }
 
-    public void stochasticTrainFromDataInObjectWhileCostAboveMax(double maxCost) throws DimensionError, IOException {
+    public void stochasticTrainFromDataInObjectWhileCostAboveMax(double maxCost) throws IOException {
 //        System.out.println(this.evaluate_time(iterations, freq));
         long start = System.currentTimeMillis();
 
@@ -321,7 +343,7 @@ public class FC {
 
     }
 
-    public void stochasticTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws DimensionError, IOException {
+    public void stochasticTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws IOException {
         long start = System.currentTimeMillis();
 
         this.feedForward(dataMatrice);
@@ -336,14 +358,14 @@ public class FC {
         System.out.printf("%s: %s\n", iteration, from_millisecondes(temps));
     }
 
-    public void batchTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice) throws DimensionError {
+    public void batchTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice) {
         long start = System.currentTimeMillis();
 
         this.feedForward(dataMatrice);
         this.batchBackPropagation(dataMatrice, targetMatrice);
     }
 
-    public void batchTuning() throws DimensionError {
+    public void batchTuning() {
         // tuning
         for (Layer layer : this.layers) {
             layer.batchTuning();

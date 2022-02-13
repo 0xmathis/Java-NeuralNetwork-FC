@@ -1,4 +1,4 @@
-package NeuralNetworkExceptions;
+package neuralNetworkExceptions;
 
 public class MatriceError extends Exception {
     public MatriceError(String error, String matrice, int badDim, int goodDim) {
