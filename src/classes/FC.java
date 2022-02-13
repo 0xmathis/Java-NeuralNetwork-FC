@@ -11,10 +11,9 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class FC {
-    private final ArrayList<Matrice> dataSet;
-    private final ArrayList<Matrice> targetsSet;
-    private ArrayList<Layer> layers;
-    private Database database;
+    private final ArrayList<Matrice> dataSet, targetsSet;
+    private final ArrayList<Layer> layers;
+    private final Database database;
 
     public FC(int[] shape, double learningRate, double momentumRate, File weightsFile, File biasesFile) throws IOException {
         this.dataSet = new ArrayList<>();
@@ -32,30 +31,6 @@ public class FC {
             }
         }
         this.toFile();
-    }
-
-    public FC(Object[] args) {
-
-        this.dataSet = new ArrayList<>();
-        this.targetsSet = new ArrayList<>();
-
-        try {
-            this.database = new Database((File) args[3], (File) args[4], (int[]) args[0]);
-            this.layers = new ArrayList<>();
-
-            for (int i = 1; i < ((int[]) args[0]).length; i++) {
-                if (this.database.isWeightsFileFull() && this.database.isBiasesFileFull()) {
-                    this.layers.add(new Layer((int[]) args[0], i, this.database.getWeigths(i), this.database.getBiases(i), (double) args[1], (double) args[2]));
-                } else {
-                    this.layers.add(new Layer((int[]) args[0], i, (double) args[1], (double) args[2]));
-                }
-            }
-
-            this.toFile();
-
-        } catch (IOException e) {
-            System.exit(0);
-        }
     }
 
     public static float abs(float x) {
