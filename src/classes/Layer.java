@@ -1,7 +1,6 @@
 package classes;
 
-import MatricesExceptions.DimensionError;
-import classes.Matrice;
+import matricesExceptions.DimensionError;
 
 public class Layer {
     private final int[] shape;
@@ -27,8 +26,8 @@ public class Layer {
         this.learningRate = learningRate;
         this.momentumRate = momentumRate;
 
-        this.weights = Matrice.random(shape[column], shape[column - 1], -1, 1);
-        this.biases = Matrice.random(shape[column], 1, -1, 1);
+        this.weights = Matrice.random(shape[column], shape[column - 1], - 1, 1);
+        this.biases = Matrice.random(shape[column], 1, - 1, 1);
 
         this.input = Matrice.vide(shape[column - 1], 1);
         this.weightedSum = Matrice.vide(shape[column - 1], 1);
@@ -67,7 +66,7 @@ public class Layer {
     }
 
     public static double sigmoid(double x) {
-        return 1 / (1 + Math.exp(-x));
+        return 1 / (1 + Math.exp(- x));
     }
 
     public Matrice feedForward(Matrice data) throws DimensionError {
