@@ -318,7 +318,7 @@ public class FC {
 
     }
 
-    public void stochasticTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws IOException, DimensionError {
+    public long stochasticTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws IOException, DimensionError {
         long start = System.currentTimeMillis();
 
         this.feedForward(dataMatrice);
@@ -331,6 +331,8 @@ public class FC {
         long temps = System.currentTimeMillis() - start;
 
         System.out.printf("%s: %s\n", iteration, from_millisecondes(temps));
+
+        return temps;
     }
 
     public void batchTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice) throws DimensionError {
