@@ -25,14 +25,14 @@ public class Main {
 
         FC nn = new FC(new int[]{180 * 166, 30, 15, 15, 15, 2}, 0.5, 1, new File("Weights.txt"), new File("Biases.txt"));
 
-        nn.stochasticTrainFromExternalData(Matrice.random(180 * 166, 1, - 5, 5), Matrice.random(2, 1, - 3, 3), 0, 400);
+        nn.trainFromExternalData(Matrice.random(180 * 166, 1, - 5, 5), Matrice.random(2, 1, - 3, 3), 0, 400);
 
         long time = 0;
         for (int i = 0; i < 100; i++) {
             Matrice input = Matrice.random(180 * 166, 1, - 5, 5);
             Matrice target = Matrice.random(2, 1, - 3, 3);
 
-            time += nn.stochasticTrainFromExternalData(input, target, i + 1, 400);
+            time += nn.trainFromExternalData(input, target, i + 1, 400);
         }
         System.out.println(time / 100);
     }

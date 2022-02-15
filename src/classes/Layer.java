@@ -3,8 +3,6 @@ package classes;
 import matricesExceptions.DimensionError;
 
 public class Layer {
-    private final int[] shape;
-    private final int column;
     private final double learningRate;
     private final double momentumRate;
     private Matrice weights;
@@ -16,12 +14,8 @@ public class Layer {
     private Matrice dCost_dWeights;
     private Matrice previousDeltaBiases;
     private Matrice previousDeltaWeights;
-    private Matrice sumDeltaBiases;
-    private Matrice sumDeltaWeights;
 
     public Layer(int[] shape, int column, double learningRate, double momentumRate) {  // si aucun poids n'est enregistré dans le fichier
-        this.shape = shape;
-        this.column = column;
 
         this.learningRate = learningRate;
         this.momentumRate = momentumRate;
@@ -36,13 +30,9 @@ public class Layer {
         this.dCost_dWeights = Matrice.vide(shape[column], shape[column - 1]);
         this.previousDeltaBiases = Matrice.vide(shape[column], 1);
         this.previousDeltaWeights = Matrice.vide(shape[column], shape[column - 1]);
-        this.sumDeltaBiases = Matrice.vide(shape[column], 1);
-        this.sumDeltaWeights = Matrice.vide(shape[column], shape[column - 1]);
     }
 
     public Layer(int[] shape, int column, Matrice weights, Matrice biases, double learningRate, double momentumRate) {
-        this.shape = shape;
-        this.column = column;
 
         this.learningRate = learningRate;
         this.momentumRate = momentumRate;
@@ -57,8 +47,6 @@ public class Layer {
         this.dCost_dWeights = Matrice.vide(shape[column], shape[column - 1]);
         this.previousDeltaBiases = Matrice.vide(shape[column], 1);
         this.previousDeltaWeights = Matrice.vide(shape[column], shape[column - 1]);
-        this.sumDeltaBiases = Matrice.vide(shape[column], 1);
-        this.sumDeltaWeights = Matrice.vide(shape[column], shape[column - 1]);
     }
 
     public static double d_sigmoid_dx(double x) {
@@ -116,7 +104,7 @@ public class Layer {
         this.deltas = errors.hp(this.weightedSum.map(Layer::d_sigmoid_dx)).mul(0.5);
     }
 
-    public void stochasticTuning() throws DimensionError {
+    public void tuning() throws DimensionError {
         Matrice momentumBiases = this.previousDeltaBiases.mul(1 - this.momentumRate);
         Matrice momentumWeights = this.previousDeltaWeights.mul(1 - this.momentumRate);
 
@@ -128,21 +116,4 @@ public class Layer {
         this.previousDeltaBiases = this.deltas.copy();
         this.previousDeltaWeights = this.dCost_dWeights.copy();
     }
-
-    public void batchSaveDeltas() throws DimensionError {
-        this.sumDeltaBiases = this.sumDeltaBiases.add(this.deltas);
-        this.sumDeltaWeights = this.sumDeltaWeights.add(this.dCost_dWeights);
-    }
-
-    public void batchTuning() throws DimensionError {
-        this.biases = this.biases.sub(this.sumDeltaBiases.mul(this.learningRate));
-        this.weights = this.weights.sub(this.sumDeltaWeights.mul(this.learningRate));
-
-    }
-
-    public void batchResetVariables() {
-        this.sumDeltaBiases = Matrice.vide(shape[column], 1);
-        this.sumDeltaWeights = Matrice.vide(shape[column], shape[column - 1]);
-    }
-
 }

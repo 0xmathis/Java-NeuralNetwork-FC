@@ -1,7 +1,5 @@
 package classes;
 
-import classes.Matrice;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;

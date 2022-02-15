@@ -85,7 +85,7 @@ public class FC {
         this.database.toFile(biasesList, weightsList);
     }
 
-    private void stochasticBackPropagation(Matrice inputs, Matrice targets) throws DimensionError {
+    private void backPropagation(Matrice inputs, Matrice targets) throws DimensionError {
         // calcul des deltas
         for (int i = this.layers.size() - 1; i >= 0; i--) {
             if (i == this.layers.size() - 1) {
@@ -106,33 +106,7 @@ public class FC {
 
         // tuning
         for (Layer layer : this.layers) {
-            layer.stochasticTuning();
-        }
-
-    }
-
-    private void batchBackPropagation(Matrice inputs, Matrice targets) throws DimensionError {
-        // calcul des deltas
-        for (int i = this.layers.size() - 1; i >= 0; i--) {
-            if (i == this.layers.size() - 1) {
-                this.layers.get(i).setOutputDeltas(targets);
-            } else {
-                this.layers.get(i).setDeltas(this.layers.get(i + 1).getWeights(), this.layers.get(i + 1).getDeltas());
-            }
-        }
-
-        // calcul des dCosts
-        for (int i = this.layers.size() - 1; i >= 0; i--) {
-            if (i == 0) {
-                this.layers.get(i).setdCost_dWeights(inputs);
-            } else {
-                this.layers.get(i).setdCost_dWeights(this.layers.get(i - 1).getOutput());
-            }
-        }
-
-        // enregistrement changements
-        for (Layer layer : this.layers) {
-            layer.batchSaveDeltas();
+            layer.tuning();
         }
 
     }
@@ -148,7 +122,7 @@ public class FC {
             Matrice data = this.dataSet.get(choix);
             Matrice target = this.targetsSet.get(choix);
             this.feedForward(data);
-            this.stochasticBackPropagation(data, target);
+            this.backPropagation(data, target);
         }
 
         long time_ff_bp = (System.currentTimeMillis() - temp2) / 200;
@@ -216,7 +190,7 @@ public class FC {
         }
     }
 
-    public void stochasticTrainFromDataInObject(int iterations, int freq) throws IOException, DimensionError {
+    public void trainFromDataInObject(int iterations, int freq) throws IOException, DimensionError {
 //        System.out.println(this.evaluate_time(iterations, freq));
         long start = System.currentTimeMillis();
 
@@ -228,7 +202,7 @@ public class FC {
             Matrice target = this.targetsSet.get(choix);
 
             this.feedForward(data);
-            this.stochasticBackPropagation(data, target);
+            this.backPropagation(data, target);
 
             double outputCost = this.layers.get(this.layers.size() - 1).getOutputCosts(target).getItem(0, 0);
             writer.write(String.format("%s", outputCost));
@@ -249,38 +223,7 @@ public class FC {
 
     }
 
-    public void batchTrainFromDataInObject(int epochs) throws IOException, DimensionError {
-        long start = System.currentTimeMillis();
-
-        for (int i = 1; i <= epochs; i++) {
-            for (int index = 0; index < this.dataSet.size(); index++) {
-                long temp = System.currentTimeMillis();
-
-                Matrice data = this.dataSet.get(index);
-                Matrice target = this.targetsSet.get(index);
-
-                this.feedForward(data);
-                this.batchBackPropagation(data, target);
-
-                System.out.printf("Epoch : %s, itération : %s, durée : %s\n", i, index + 1, FC.from_millisecondes(System.currentTimeMillis() - temp));
-            }
-            this.batchTuning();
-            this.toFile();
-            this.batchResetVariables();
-
-        }
-
-        System.out.printf("Temps total: %s\n", from_millisecondes(System.currentTimeMillis() - start));
-        System.out.println(LocalTime.now());
-    }
-
-    public void batchResetVariables() {
-        for (Layer layer : this.layers) {
-            layer.batchResetVariables();
-        }
-    }
-
-    public void stochasticTrainFromDataInObjectWhileCostAboveMax(double maxCost) throws IOException, DimensionError {
+    public void trainFromDataInObjectWhileCostAboveMax(double maxCost) throws IOException, DimensionError {
 //        System.out.println(this.evaluate_time(iterations, freq));
         long start = System.currentTimeMillis();
 
@@ -295,7 +238,7 @@ public class FC {
             Matrice target = this.targetsSet.get(choix);
 
             this.feedForward(data);
-            this.stochasticBackPropagation(data, target);
+            this.backPropagation(data, target);
 
             cost = this.layers.get(this.layers.size() - 1).getOutputCosts(target).getItem(0, 0);
 
@@ -318,11 +261,11 @@ public class FC {
 
     }
 
-    public long stochasticTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws IOException, DimensionError {
+    public long trainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws IOException, DimensionError {
         long start = System.currentTimeMillis();
 
         this.feedForward(dataMatrice);
-        this.stochasticBackPropagation(dataMatrice, targetMatrice);
+        this.backPropagation(dataMatrice, targetMatrice);
 
         if (iteration % freq == 0) {
             this.toFile();
@@ -334,19 +277,4 @@ public class FC {
 
         return temps;
     }
-
-    public void batchTrainFromExternalData(Matrice dataMatrice, Matrice targetMatrice) throws DimensionError {
-        long start = System.currentTimeMillis();
-
-        this.feedForward(dataMatrice);
-        this.batchBackPropagation(dataMatrice, targetMatrice);
-    }
-
-    public void batchTuning() throws DimensionError {
-        // tuning
-        for (Layer layer : this.layers) {
-            layer.batchTuning();
-        }
-    }
-
 }
