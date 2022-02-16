@@ -111,7 +111,7 @@ public class FC {
 
     }
 
-    private String evaluate_time(int iterations, int freq) throws IOException, DimensionError {
+    private String evaluate_time(int iterations, int frequence) throws IOException, DimensionError {
         long temp1 = System.currentTimeMillis();
         this.toFile();
         long time_toFile = System.currentTimeMillis() - temp1;
@@ -129,7 +129,7 @@ public class FC {
 
         System.out.println(from_millisecondes(time_ff_bp * iterations));
 
-        long time_total = time_ff_bp * iterations + time_toFile * (iterations / freq);
+        long time_total = time_ff_bp * iterations + time_toFile * (iterations / frequence);
 
         return String.format("Temps total évalué : %s", from_millisecondes(time_total));
     }
@@ -141,24 +141,37 @@ public class FC {
         return data;
     }
 
-    public ArrayList<Double> guess(ArrayList<ArrayList<Double>> test_data) throws DimensionError {
-        Matrice data_matrice = new Matrice(test_data).transpose();
+    public ArrayList<Double> guess(ArrayList<ArrayList<Double>> testData) throws DimensionError {
+        Matrice dataMatrice = new Matrice(testData).transpose();
 
-        Matrice guess = feedForward(data_matrice);
+        Matrice guess = feedForward(dataMatrice);
 
         return guess.transpose().toArrayList().get(0);
     }
 
-    public ArrayList<Double> guess(double[] test_data) throws DimensionError {
-        int choix = randint(test_data.length - 1);
+    public ArrayList<Double> guess(double[] testData) throws DimensionError {
+        int choix = randint(testData.length - 1);
 
-        double[][] data_ = new double[][]{test_data};
+        double[][] data_ = new double[][]{testData};
         Matrice data_matrice = new Matrice(data_).transpose();
 
         Matrice guess = feedForward(data_matrice);
 
         return guess.transpose().toArrayList().get(0);
 
+    }
+
+    public Matrice guess(Matrice testData) throws DimensionError {
+        Matrice dataMatrice;
+        if (testData.getRows() == 1) {
+            dataMatrice = testData.transpose();
+        } else {
+            dataMatrice = testData;
+        }
+
+        Matrice guess = feedForward(dataMatrice);
+
+        return guess.transpose();
     }
 
     public void setDataSet(ArrayList<ArrayList<Double>> data) {
@@ -190,8 +203,8 @@ public class FC {
         }
     }
 
-    public void trainFromDataInObject(int iterations, int freq) throws IOException, DimensionError {
-//        System.out.println(this.evaluate_time(iterations, freq));
+    public void trainFromDataInObject(int iterations, int frequence) throws IOException, DimensionError {
+//        System.out.println(this.evaluate_time(iterations, frequence));
         long start = System.currentTimeMillis();
 
         FileWriter writer = new FileWriter("errors.txt");
@@ -208,7 +221,7 @@ public class FC {
             writer.write(String.format("%s", outputCost));
             writer.write("\n");
 
-            if (i % freq == 0) {
+            if (i % frequence == 0) {
                 this.toFile();
             }
 
@@ -223,8 +236,41 @@ public class FC {
 
     }
 
+    public void trainFromDataInObjectForTime(int secondes, int frequence) throws IOException, DimensionError {
+        long start = System.currentTimeMillis();
+
+        FileWriter writer = new FileWriter("errors.txt");
+        int i = 0;
+        while ((System.currentTimeMillis() - start) / 1_000 < secondes) {
+            long temp = System.currentTimeMillis();
+            int choix = randint(this.dataSet.size() - 1);
+            Matrice data = this.dataSet.get(choix);
+            Matrice target = this.targetsSet.get(choix);
+
+            this.feedForward(data);
+            this.backPropagation(data, target);
+
+            double outputCost = this.layers.get(this.layers.size() - 1).getOutputCosts(target).getItem(0, 0);
+            writer.write(String.format("%s", outputCost));
+            writer.write("\n");
+
+            if (i % frequence == 0) {
+                this.toFile();
+            }
+
+            long temps = System.currentTimeMillis() - temp;
+            System.out.printf("%s: %s\n", i, from_millisecondes(temps));
+
+            i++;
+        }
+        writer.close();
+
+        System.out.printf("Temps total: %s\n", from_millisecondes(System.currentTimeMillis() - start));
+        System.out.println(LocalTime.now());
+    }
+
     public void trainFromDataInObjectWhileCostAboveMax(double maxCost) throws IOException, DimensionError {
-//        System.out.println(this.evaluate_time(iterations, freq));
+//        System.out.println(this.evaluate_time(iterations, frequence));
         long start = System.currentTimeMillis();
 
         FileWriter writer = new FileWriter("errors.txt");
@@ -261,13 +307,13 @@ public class FC {
 
     }
 
-    public long trainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int freq) throws IOException, DimensionError {
+    public long trainFromExternalData(Matrice dataMatrice, Matrice targetMatrice, int iteration, int frequence) throws IOException, DimensionError {
         long start = System.currentTimeMillis();
 
         this.feedForward(dataMatrice);
         this.backPropagation(dataMatrice, targetMatrice);
 
-        if (iteration % freq == 0) {
+        if (iteration % frequence == 0) {
             this.toFile();
         }
 
