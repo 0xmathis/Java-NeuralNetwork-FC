@@ -15,9 +15,16 @@ public class FC {
     private final ArrayList<Layer> layers;
     private final Database database;
 
-    public FC(int[] shape, double learningRate, double momentumRate, File weightsFile, File biasesFile) throws IOException {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public FC(int[] shape, double learningRate, double momentumRate) throws IOException {
         this.dataSet = new ArrayList<>();
         this.targetsSet = new ArrayList<>();
+
+        File folder = new File("FC");
+        folder.mkdir();
+
+        File biasesFile = new File("FC\\biases.txt");
+        File weightsFile = new File("FC\\weights.txt");
 
         this.database = new Database(weightsFile, biasesFile, shape);
 

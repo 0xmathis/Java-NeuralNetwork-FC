@@ -7,6 +7,23 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="_PersoMatrices" />
+    <orderEntry type="module-library">
+      <library name="Matrices">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../_PersoMatrices/out/artifacts/_PersoMatrices_jar/_PersoMatrices.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="ImageData">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../ImageData/out/artifacts/ImageData_jar/ImageData.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
